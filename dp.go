@@ -123,3 +123,67 @@ func Min(a, b int) int {
 	}
 	return b
 }
+
+func lengthOfLIS(nums []int) int {
+	// sub seq is subset that may contain non-contiguous elements
+	// each element in the array is a seq of length 1
+	// dp[i] -> length of longest inc sub-sequence ending with element nums[i]
+	dp := make([]int, len(nums))
+	res := 0
+	for idx, _ := range dp {
+		dp[idx] = 1
+		maxSubSeqIdx := idx
+		for j := idx - 1; j >= 0; j -= 1 {
+			if nums[idx] > nums[j] && dp[j] >= dp[maxSubSeqIdx] {
+				maxSubSeqIdx = j
+			}
+		}
+		if maxSubSeqIdx != idx {
+			dp[idx] += dp[maxSubSeqIdx]
+		}
+		// coz sub seq can end at any index and we need to find the max LIS
+		res = Max(res, dp[idx])
+	}
+	return res
+}
+
+func Max(a, b int) int {
+	if a > b {
+		return a
+	}
+	return b
+}
+
+func _lengthOfLIS(nums []int) int {
+	/*
+		2,3,7,101,3,7,101,18
+
+	*/
+	arrLen := len(nums)
+	length := 1
+	for idx := 1; idx < arrLen; idx++ {
+		if nums[idx] > nums[length] {
+			length++
+		} else { // so nums[idx] would replace some or the other element
+			// because of the invariant that [0..length-1] is sort and inc array
+			lbIdx := lowerBound(nums[idx], 0, length-1, nums)
+			nums[lbIdx] = nums[idx]
+		}
+	}
+	return length
+}
+
+func lowerBound(x, lo, hi int, nums []int) int {
+	for lo < hi {
+		mid := lo + (hi-lo)/2 // left biased mid, since we are moving away from lo
+		if nums[mid] >= x {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	if nums[lo] >= x {
+		return lo
+	}
+	return -1
+}

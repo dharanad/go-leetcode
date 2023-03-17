@@ -12,7 +12,7 @@ func beautifulSubarrays(nums []int) int64 {
 			// iterate over all the 32 bit
 			// count if there are even number of bits in each position
 			for bit := 0; bit < 32; bit++ {
-				if !checkBitPositionIsBeautiful(nums, i, j, bit) {
+				if !(bitCountAtIndex(nums, i, j, bit)&1 == 0) {
 					flag = false
 					break
 				}
@@ -25,7 +25,7 @@ func beautifulSubarrays(nums []int) int64 {
 	return count
 }
 
-func checkBitPositionIsBeautiful(nums []int, start, end, bitPos int) bool {
+func bitCountAtIndex(nums []int, start, end, bitPos int) int {
 	mask := 1 << bitPos
 	bitCount := 0
 	for i := start; i <= end; i++ {
@@ -33,7 +33,7 @@ func checkBitPositionIsBeautiful(nums []int, start, end, bitPos int) bool {
 			bitCount++
 		}
 	}
-	return bitCount&1 == 0
+	return bitCount
 }
 
 func passThePillow(n int, time int) int {
