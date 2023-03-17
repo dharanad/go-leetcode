@@ -96,20 +96,23 @@ func _coinChange(coins []int, amount int) int {
 }
 
 func __coinChange(coins []int, amount int) int {
+	// ideally the amount of coins required should not exceed the total amount of coins
+	// so we can assume amount+1 as maxInt in this context
+	maxInt := amount + 1
 	dp := make([]int, amount+1)
 	for i := 0; i <= amount; i++ {
-		dp[i] = math.MaxInt
+		dp[i] = maxInt
 	}
 	dp[0] = 0
 	for i := 1; i <= amount; i++ {
 		for _, val := range coins {
 			if i >= val {
-				dp[i] = Min(dp[i], dp[i-val])
+				dp[i] = Min(dp[i], 1+dp[i-val])
 			}
 		}
-		if dp[i] != math.MaxInt {
-			dp[i]++
-		}
+	}
+	if dp[amount] > amount {
+		return -1
 	}
 	return dp[amount]
 }
