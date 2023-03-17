@@ -1,5 +1,9 @@
 package main
 
+import (
+	"math"
+)
+
 /*
 Knapsack means a bag. Just like a school or a travel or laptop back
 In this problem either we can take everything or take nothing from a bag
@@ -43,5 +47,76 @@ func MaxInt(a, b int) int {
 }
 
 func FractionalKnapsack(cost, value []int, idx, w, n int) int {
+	return -1
+}
 
+func climbStairs(n int) int {
+	if n < 0 {
+		return 0
+	}
+	if n == 0 || n == 1 {
+		return 1
+	}
+	// dp[i] -> no of way to reach to reach top
+	// dp[i] -> dp[i-1] + dp[i-2] by climbing one or two steps
+	dp := make([]int, n+1)
+	dp[0] = 1
+	dp[1] = 1
+	for i := 2; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
+	}
+	return dp[n]
+}
+
+func coinChange(coins []int, amount int) int {
+	if x := _coinChange(coins, amount); x == math.MaxInt {
+		return -1
+	} else {
+		return x
+	}
+}
+
+func _coinChange(coins []int, amount int) int {
+	/*
+		dp[i] -> min no of coins required to make amount i
+	*/
+	if amount == 0 {
+		return 0
+	}
+	res := math.MaxInt
+	for _, val := range coins {
+		if amount >= val {
+			res = Min(res, _coinChange(coins, amount-val))
+		}
+	}
+	if res != math.MaxInt {
+		return 1 + res
+	}
+	return res
+}
+
+func __coinChange(coins []int, amount int) int {
+	dp := make([]int, amount+1)
+	for i := 0; i <= amount; i++ {
+		dp[i] = math.MaxInt
+	}
+	dp[0] = 0
+	for i := 1; i <= amount; i++ {
+		for _, val := range coins {
+			if i >= val {
+				dp[i] = Min(dp[i], dp[i-val])
+			}
+		}
+		if dp[i] != math.MaxInt {
+			dp[i]++
+		}
+	}
+	return dp[amount]
+}
+
+func Min(a, b int) int {
+	if a < b {
+		return a
+	}
+	return b
 }
