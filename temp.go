@@ -1,5 +1,7 @@
 package main
 
+import "sort"
+
 func beautifulSubarrays(nums []int) int64 {
 	// subtracting 2^k doesn't move or the alter the bits from their position
 	// just bit at position k turn to 0
@@ -86,4 +88,51 @@ func coloredCells(n int) int64 {
 		time++
 	}
 	return count
+}
+
+func maximizeGreatness(nums []int) int {
+	sort.Slice(nums, func(i, j int) bool {
+		return nums[i] < nums[j]
+	})
+	res := 0
+	for _, val := range nums {
+		if val > nums[res] {
+			res++
+		}
+	}
+	return res
+}
+
+func findScore(nums []int) int64 {
+	type ValIndexPair struct {
+		First  int
+		Second int
+	}
+	numsLen := len(nums)
+	pairs := make([]ValIndexPair, numsLen)
+	for idx, val := range nums {
+		pairs[idx] = ValIndexPair{
+			First:  val,
+			Second: idx,
+		}
+	}
+	sort.Slice(pairs, func(i, j int) bool {
+		if pairs[i].First == pairs[j].First {
+			return pairs[i].Second < pairs[j].Second
+		}
+		return pairs[i].First < pairs[j].First
+	})
+	markedIndex := make(map[int]struct{})
+	score := int64(0)
+	for i := 0; i < numsLen; i++ {
+		p := pairs[i]
+		if _, ok := markedIndex[p.Second]; ok {
+			continue
+		}
+		score += int64(p.First)
+		markedIndex[p.Second] = struct{}{}
+		markedIndex[p.Second+1] = struct{}{}
+		markedIndex[p.Second-1] = struct{}{}
+	}
+	return score
 }

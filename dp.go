@@ -2,6 +2,7 @@ package main
 
 import (
 	"math"
+	"sort"
 )
 
 /*
@@ -186,4 +187,63 @@ func lowerBound(x, lo, hi int, nums []int) int {
 		return lo
 	}
 	return -1
+}
+
+func maxEnvelopes(envelopes [][]int) int {
+	/*
+	   fits iff h & w are >
+	*/
+	sort.Slice(envelopes, func(i, j int) bool {
+		if envelopes[i][0] == envelopes[j][0] {
+			return envelopes[i][1] < envelopes[j][1]
+		}
+		return envelopes[i][0] < envelopes[j][0]
+	})
+	arrLen := len(envelopes)
+	length := 1
+	for i := 1; i < arrLen; i++ {
+		if gt(envelopes, i, length-1) {
+			envelopes[length] = envelopes[i]
+			length++
+		} else {
+			lo := 0
+			hi := length - 1
+			for lo < hi {
+				mid := lo + (hi-lo)/2
+				if gte(envelopes, mid, i) {
+					hi = mid
+				} else {
+					lo = mid + 1
+				}
+			}
+			envelopes[lo] = envelopes[i]
+		}
+	}
+	return length
+}
+
+// gt check if first envelop is greater than the second one
+func gt(envelopes [][]int, first, second int) bool {
+	return envelopes[second][0] < envelopes[first][0] && envelopes[second][1] < envelopes[first][1]
+}
+
+func gte(envelopes [][]int, first, second int) bool {
+	return envelopes[second][0] <= envelopes[first][0] && envelopes[second][1] <= envelopes[first][1]
+}
+
+func subarraySum(nums []int, k int) int {
+	countMap := make(map[int]int)
+	res := 0
+	sum := 0
+	for _, val := range nums {
+		sum += val
+		if sum == k {
+			res++
+		}
+		if v, ok := countMap[sum-k]; ok {
+			res += v
+		}
+		countMap[sum] += 1
+	}
+	return res
 }
