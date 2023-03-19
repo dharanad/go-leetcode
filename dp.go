@@ -247,3 +247,66 @@ func subarraySum(nums []int, k int) int {
 	}
 	return res
 }
+
+func repairCars(ranks []int, cars int) int64 {
+	lo, hi := int64(0), int64(100*1e5*1e5)
+	for lo < hi {
+		var mid = lo + (hi-lo)/2
+		if canRepair(ranks, cars, mid) {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	return lo
+}
+
+func canRepair(ranks []int, cars int, time int64) bool {
+	var carsRepaired int64 = 0
+	for _, val := range ranks {
+		carsRepaired += int64(math.Sqrt(float64(time / int64(val))))
+	}
+	return carsRepaired >= int64(cars)
+}
+
+func evenOddBit(n int) []int {
+	even, odd := 0, 0
+	for i := 0; i < 31 && n > 0; i++ {
+		if n&1 == 1 {
+			if i&1 == 0 {
+				even++
+			} else {
+				odd++
+			}
+		}
+		n = n >> 1
+	}
+	return []int{even, odd}
+}
+
+func checkValidGrid(grid [][]int) bool {
+	dx := []int{1, -1, 1, -1, -2, -2, 2, 2}
+	dy := []int{-2, -2, 2, 2, 1, -1, 1, -1}
+	counter := 0
+	n := len(grid)
+	i, j := 0, 0
+	for true {
+		for k := 0; k < 8; k++ {
+			ni := i + dx[k]
+			nj := j + dy[k]
+			if ni < 0 || ni >= n || nj < 0 || nj >= n {
+				continue
+			}
+			if grid[ni][nj] == counter+1 {
+				i = ni
+				j = nj
+				break
+			}
+		}
+		if grid[i][j] != counter+1 {
+			break
+		}
+		counter++
+	}
+	return counter == (n*n - 1)
+}
