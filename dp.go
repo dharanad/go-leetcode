@@ -131,7 +131,7 @@ func lengthOfLIS(nums []int) int {
 	// dp[i] -> length of longest inc sub-sequence ending with element nums[i]
 	dp := make([]int, len(nums))
 	res := 0
-	for idx, _ := range dp {
+	for idx := range dp {
 		dp[idx] = 1
 		maxSubSeqIdx := idx
 		for j := idx - 1; j >= 0; j -= 1 {
@@ -309,4 +309,22 @@ func checkValidGrid(grid [][]int) bool {
 		counter++
 	}
 	return counter == (n*n - 1)
+}
+
+func rob(nums []int) int {
+	// dp[i] -> max amount of robbed till index i
+	arrLen := len(nums)
+	if arrLen == 1 {
+		return nums[0]
+	}
+	if arrLen == 2 {
+		return MaxInt(nums[0], nums[1])
+	}
+	dp := make([]int, arrLen)
+	dp[0] = nums[0]
+	dp[1] = nums[1]
+	for i := 2; i < arrLen; i++ {
+		dp[i] = MaxInt(dp[i-1], nums[i]+dp[i-2])
+	}
+	return dp[arrLen-1]
 }

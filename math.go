@@ -85,3 +85,16 @@ func mergeArrays(nums1 [][]int, nums2 [][]int) [][]int {
 	}
 	return res
 }
+
+func divisibilityArray(word string, m int) []int {
+	arrLen := len(word)
+	ans := make([]int, arrLen)
+	var r int64 = 0
+	for idx := range word {
+		r = (r*10 + int64(word[idx]-'0')) % int64(m)
+		if r == 0 {
+			ans[idx] = 1
+		}
+	}
+	return ans
+}
