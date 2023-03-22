@@ -1,5 +1,9 @@
 package main
 
+import (
+	"sort"
+)
+
 func CountDigit(x int) int {
 	digitCount := 0
 	for x > 0 {
@@ -97,4 +101,29 @@ func divisibilityArray(word string, m int) []int {
 		}
 	}
 	return ans
+}
+
+func maxNumOfMarkedIndices(nums []int) int {
+	arrLen := len(nums)
+	sort.Slice(nums, func(i, j int) bool {
+		return nums[i] < nums[j]
+	})
+	i := 0
+	for idx := arrLen - arrLen/2; idx < arrLen; idx++ {
+		if 2*nums[i] <= nums[idx] {
+			i++
+		}
+	}
+	return 2 * i
+}
+
+func twoSum(nums []int, target int) []int {
+	valIdxMap := make(map[int]int)
+	for idx, val := range nums {
+		if otherIdx, ok := valIdxMap[target-val]; ok {
+			return []int{otherIdx, idx}
+		}
+		valIdxMap[val] = idx
+	}
+	return []int{}
 }
