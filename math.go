@@ -127,3 +127,42 @@ func twoSum(nums []int, target int) []int {
 	}
 	return []int{}
 }
+
+func lengthOfLongestSubstring(s string) int {
+	runeIdxMap := make(map[rune]int)
+	res := 0
+	start := 0
+	for idx, val := range s {
+		if lastIdx, ok := runeIdxMap[val]; ok {
+			start = MaxInt(start, lastIdx+1)
+		}
+		res = MaxInt(res, idx-start+1)
+		runeIdxMap[val] = idx
+	}
+	return res
+}
+
+func hasAtMostKDistinctCharacters(k int, ft []int) bool {
+	count := 0
+	for _, val := range ft {
+		if val > 0 {
+			count++
+		}
+	}
+	return count <= k
+}
+
+func lengthOfLongestSubstringTwoDistinct(s string) int {
+	ft := make([]int, 256)
+	start := 0
+	res := 0
+	for idx, val := range s {
+		ft[val-'A']++
+		for !hasAtMostKDistinctCharacters(2, ft) {
+			ft[s[start]-'A']--
+			start++
+		}
+		res = MaxInt(res, idx-start+1)
+	}
+	return res
+}
