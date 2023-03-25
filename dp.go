@@ -328,3 +328,34 @@ func rob(nums []int) int {
 	}
 	return dp[arrLen-1]
 }
+
+func canPartitionKSubsets(nums []int, k int) bool {
+	arrLen := len(nums)
+	totalArraySum := 0
+	for _, val := range nums {
+		totalArraySum += val
+	}
+	if totalArraySum%k != 0 {
+		return false
+	}
+
+	targetSum := totalArraySum / k
+	subsetCount := 1 << arrLen
+	dp := make([]int, subsetCount)
+	for idx := range dp {
+		dp[idx] = -1
+	}
+	dp[0] = 0
+	for mask := 0; mask < subsetCount; mask++ {
+		if dp[mask] == -1 {
+			continue
+		}
+
+		for j := 0; j < arrLen; j++ {
+			if ((mask & (1 << j)) == 0) && dp[mask]+nums[j] <= targetSum {
+				dp[mask|(1<<j)] = (dp[mask] + nums[j]) % targetSum
+			}
+		}
+	}
+	return dp[subsetCount-1] == 0
+}
