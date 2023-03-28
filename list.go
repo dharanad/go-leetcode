@@ -54,3 +54,14 @@ func addTwoNumbers(l1 *ListNode, l2 *ListNode) *ListNode {
 	}
 	return head.Next
 }
+
+func removeElement(nums []int, val int) int {
+	ptr := 0
+	for idx, v := range nums {
+		if v != val {
+			nums[idx], nums[ptr] = nums[ptr], nums[idx]
+			ptr++
+		}
+	}
+	return ptr
+}
