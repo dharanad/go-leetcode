@@ -65,3 +65,17 @@ func removeElement(nums []int, val int) int {
 	}
 	return ptr
 }
+
+// [1,1,2,2,3,4]
+func removeDuplicates(nums []int) int {
+	ptr := 0
+	for idx := 1; idx < len(nums); idx++ {
+		if nums[idx] == nums[ptr] {
+			continue
+		} else {
+			ptr++
+			nums[ptr] = nums[idx]
+		}
+	}
+	return ptr + 1
+}
