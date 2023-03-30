@@ -1,6 +1,9 @@
 package main
 
-import "fmt"
+import (
+	"container/list"
+	"fmt"
+)
 
 func main() {
 	//nums := []int{42, 83, 48, 10, 24, 55, 9, 100, 10, 17, 17, 99, 51, 32, 16, 98, 99, 31, 28, 68, 71, 14, 64, 29, 15, 40}
@@ -16,4 +19,28 @@ type TreeNode struct {
 type ListNode struct {
 	Val  int
 	Next *ListNode
+}
+
+func isValid(s string) bool {
+	stack := list.New()
+	openingBracketMap := map[rune]rune{
+		'}': '{',
+		')': '(',
+		']': '[',
+	}
+	// put opening into list
+	// when closing comes check if its has its opening match in stack
+	for _, c := range s {
+		if c == '[' || c == '(' || c == '{' {
+			stack.PushBack(c)
+		} else {
+			o := openingBracketMap[c]
+			if stack.Len() != 0 && stack.Back().Value == o {
+				stack.Remove(stack.Back())
+			} else {
+				return false
+			}
+		}
+	}
+	return stack.Len() == 0
 }
