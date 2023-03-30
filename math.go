@@ -1,6 +1,7 @@
 package main
 
 import (
+	"math"
 	"sort"
 )
 
@@ -165,4 +166,78 @@ func lengthOfLongestSubstringTwoDistinct(s string) int {
 		res = MaxInt(res, idx-start+1)
 	}
 	return res
+}
+
+func PrimeSieve(end int) []int {
+	var res []int
+	prime := make([]bool, end+1)
+	for i := 0; i <= end; i++ {
+		prime[i] = true
+	}
+	prime[0] = false
+	prime[1] = false
+	last := int(math.Sqrt(float64(end))) + 1
+	for i := 2; i <= last; i++ {
+		if prime[i] {
+			for k := 2 * i; k <= end; k += i {
+				prime[k] = false
+			}
+		}
+	}
+	for i := 2; i <= end; i++ {
+		if prime[i] {
+			res = append(res, i)
+		}
+	}
+	return res
+}
+
+func rtLtIdx(arr []int, key int) int {
+	lo := 0
+	hi := len(arr) - 1
+	for lo < hi {
+		mid := lo + (hi-lo+1)/2
+		if arr[mid] < key {
+			lo = mid
+		} else {
+			hi = mid - 1
+		}
+	}
+	if arr[lo] < key {
+		return lo
+	}
+	return -1
+}
+
+func primeSubOperation(nums []int) bool {
+	/*
+
+	   invariant
+	   start applying operation from the first number
+	   start from the largest prime < number
+	   subtract it
+
+	   same but should be greater than prev
+
+	*/
+	primes := PrimeSieve(1000)
+	prev := math.MinInt
+	for idx, val := range nums {
+		ltPIdx := rtLtIdx(primes, val)
+		for j := ltPIdx; j >= 0; j-- {
+			if val-primes[j] > prev {
+				nums[idx] = val - primes[j]
+				break
+			}
+		}
+		prev = nums[idx]
+	}
+	prev = math.MinInt
+	for _, val := range nums {
+		if prev >= val {
+			return false
+		}
+		prev = val
+	}
+	return true
 }
