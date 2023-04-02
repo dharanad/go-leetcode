@@ -241,3 +241,72 @@ func primeSubOperation(nums []int) bool {
 	}
 	return true
 }
+
+func findTheArrayConcVal(nums []int) int64 {
+	arrLen := len(nums)
+	return findTheArrayConcValHelper(nums, 0, arrLen-1)
+}
+
+func findTheArrayConcValHelper(nums []int, start, end int) int64 {
+	if start == end {
+		return int64(nums[start])
+	} else {
+		var base int64 = 10
+		for int64(nums[end])/base > 0 {
+			base *= 10
+		}
+		return int64(nums[start])*base + int64(nums[end]) + findTheArrayConcValHelper(nums, start+1, end-1)
+	}
+}
+
+//func someHelper(grid [][]int) bool {
+//	rows := len(grid)
+//	cols := len(grid[0])
+//	visited := make([][]bool, rows)
+//	for idx := range visited {
+//		visited[idx] = make([]bool, cols)
+//	}
+//	return
+//}
+//
+//func isPossibleToCutPath(grid [][]int) bool {
+//
+//}
+
+func searchRange(nums []int, target int) []int {
+	return []int{leftMost(nums, target), rightMost(nums, target)}
+}
+
+func rightMost(nums []int, target int) int {
+	lo := 0
+	hi := len(nums) - 1
+	for lo < hi {
+		mid := lo + (hi-lo+1)/2
+		if nums[mid] <= target {
+			lo = mid
+		} else {
+			hi = mid - 1
+		}
+	}
+	if nums[lo] == target {
+		return lo
+	}
+	return -1
+}
+
+func leftMost(nums []int, target int) int {
+	lo := 0
+	hi := len(nums) - 1
+	for lo < hi {
+		mid := lo + (hi-lo)/2
+		if nums[mid] >= target {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	if nums[lo] == target {
+		return lo
+	}
+	return -1
+}
