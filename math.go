@@ -310,3 +310,60 @@ func leftMost(nums []int, target int) int {
 	}
 	return -1
 }
+
+func merge(intervals [][]int) [][]int {
+	sort.Slice(intervals, func(i, j int) bool {
+		return intervals[i][0] < intervals[j][0]
+	})
+	count := len(intervals)
+	var res [][]int
+	res = append(res, intervals[0])
+	for i := 1; i < count; i++ {
+		last := len(res) - 1
+		if hasOverlapped(res[last], intervals[i]) {
+			res[last][1] = Min(res[last][1], intervals[i][1])
+		} else {
+			res = append(res, intervals[i])
+		}
+	}
+	return res
+}
+
+func hasOverlapped(a, b []int) bool {
+	return Max(a[0], b[0]) <= Min(a[1], b[1])
+}
+
+func successfulPairs(spells []int, potions []int, success int64) []int {
+	sort.Slice(potions, func(i, j int) bool {
+		return potions[i] < potions[j]
+	})
+	res := make([]int, len(spells))
+	portionCount := len(potions)
+	for idx, s := range spells {
+		rem := success % int64(s)
+		if rem > 0 {
+			rem = 1
+		}
+		validIdx := currLowerBound(potions, int(success/int64(s))+int(rem))
+		res[idx] = portionCount - validIdx
+	}
+	return res
+}
+
+func currLowerBound(nums []int, target int) int {
+	arrLen := len(nums)
+	lo := 0
+	hi := arrLen - 1
+	for lo < hi {
+		mid := lo + (hi-lo)/2
+		if nums[mid] >= target {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	if nums[lo] <= target {
+		return lo
+	}
+	return arrLen
+}
