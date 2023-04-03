@@ -367,3 +367,48 @@ func currLowerBound(nums []int, target int) int {
 	}
 	return arrLen
 }
+
+func numRescueBoats(people []int, limit int) int {
+	/*
+	   Binary Search on boats
+	   If i can do it with 5 i can also do with 6 boats
+	*/
+	sort.Slice(people, func(i, j int) bool {
+		return people[i] < people[j]
+	})
+	peopleCount := len(people)
+	lo := 0
+	hi := peopleCount
+	for lo < hi {
+		mid := lo + (hi-lo)/2
+		if good(people, limit, mid) {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	return lo
+}
+
+func good(people []int, limit int, maxPeopleCount int) bool {
+	count := 0
+	peopleCount := len(people)
+	lo := 0
+	hi := peopleCount - 1
+	for lo <= hi {
+		if lo == hi {
+			count++
+			break
+		}
+		sum := people[lo] + people[hi]
+		if sum <= limit {
+			count++
+			lo++
+			hi--
+		} else {
+			count++
+			hi--
+		}
+	}
+	return count <= maxPeopleCount
+}
