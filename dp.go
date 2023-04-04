@@ -3,6 +3,7 @@ package main
 import (
 	"math"
 	"sort"
+	"strings"
 )
 
 /*
@@ -358,4 +359,38 @@ func canPartitionKSubsets(nums []int, k int) bool {
 		}
 	}
 	return dp[subsetCount-1] == 0
+}
+
+func maximumCostSubstring(s string, chars string, vals []int) int {
+	// a b c
+	// 1000 -99 20000
+	// each index i can start a new subarray of extend it
+	// dp[i] -> cost of substring ending at index i
+	cost := func(r rune) int {
+		if idx := strings.IndexRune(chars, r); idx != -1 {
+			return vals[idx]
+		}
+		return int(r-'a') + 1
+	}
+	dp := make([]int, len(s))
+	dp[0] = Max(0, cost(rune(s[0])))
+	for idx, val := range s {
+		if idx == 0 {
+			continue
+		}
+		currCost := cost(val)
+		// extend from previous substring
+		// or start a new one from current index
+		// of ignore
+		dp[idx] = Max(dp[idx-1]+currCost, Max(currCost, 0))
+	}
+	return ArrMax(dp)
+}
+
+func ArrMax(nums []int) int {
+	res := math.MinInt
+	for _, val := range nums {
+		res = Max(res, val)
+	}
+	return res
 }
