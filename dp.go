@@ -394,3 +394,62 @@ func ArrMax(nums []int) int {
 	}
 	return res
 }
+
+func fib(n int) int {
+	if n <= 1 {
+		return n
+	}
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	for i := 2; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2]
+	}
+	return dp[n]
+}
+
+func tribonacci(n int) int {
+	if n <= 1 {
+		return n
+	}
+	if n == 2 {
+		return 1
+	}
+	dp := make([]int, n+1)
+	dp[0] = 0
+	dp[1] = 1
+	dp[2] = 1
+	for i := 3; i <= n; i++ {
+		dp[i] = dp[i-1] + dp[i-2] + dp[i-3]
+	}
+	return dp[n]
+}
+
+func partitionString(s string) int {
+	//runIndexMap := make(map[rune]int)
+	res := 1
+	//for r, i := range s {
+	//	if _, ok := runIndexMap[rune(r)]; ok {
+	//
+	//	}
+	//}
+	return res
+}
+
+func searchInsert(nums []int, target int) int {
+	arrLen := len(nums)
+	lo := 0
+	hi := arrLen - 1
+	for lo < hi {
+		mid := lo + (hi-lo)/2
+		if nums[mid] >= target {
+			hi = mid
+		} else {
+			lo = mid + 1
+		}
+	}
+	if lo == arrLen-1 && nums[lo] != target {
+		return lo + 1
+	}
+	return lo
+}
